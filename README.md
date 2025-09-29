@@ -1,6 +1,3 @@
-# Diagrama de Secuencia - Proyecto ML (versión con barrido nuevo)
-
-```mermaid
 sequenceDiagram
     participant Usuario
     participant Sistema as Script Python
@@ -39,5 +36,10 @@ sequenceDiagram
         Sistema->>Modelo: predict(características)
         Sistema->>Modelo: predict_proba(características)
     end
+    Sistema->>Visualizacion: Graficar resultados suavizados (uniform_filter1d)
+    Sistema->>Visualizacion: Graficar máximos detectados en el barrido (ΔS11)
+    Sistema->>Visualizacion: Graficar frecuencias de los picos en el barrido
+    end
+
     Sistema->>Visualizacion: Graficar resultados suavizados (uniform_filter1d)
     end
