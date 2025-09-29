@@ -1,4 +1,4 @@
-# Diagrama de Secuencia - Proyecto ML (versión detallada)
+# Diagrama de Secuencia - Proyecto ML (versión con barrido nuevo)
 
 ```mermaid
 sequenceDiagram
@@ -9,26 +9,35 @@ sequenceDiagram
     participant Picos as Extracción de Picos
     participant Dataset as Dataset (Pandas)
     participant Modelo as RandomForest
+    participant Barrido as Barrido nuevo
     participant Visualizacion as Matplotlib
 
     Usuario->>Sistema: Ejecutar script
+
+    rect rgb(200, 240, 255)
+    note over Sistema: Entrenamiento
     Sistema->>FS: seleccionar_archivos_por_rangos()
     loop Archivos sin grieta
         Sistema->>Preproc: read_s1p_custom()
-        Preproc->>Picos: extract_max_with_freq(S11, S11_ref)
-        Picos-->>Sistema: Características [max_i, freq_i]
-        Sistema->>Dataset: Guardar fila (label=0)
+        Preproc->>Picos: extract_max_with_freq()
+        Sistema->>Dataset: Guardar características (label=0)
     end
     loop Archivos con grieta
         Sistema->>Preproc: read_s1p_custom()
-        Preproc->>Picos: extract_max_with_freq(S11, S11_ref)
-        Picos-->>Sistema: Características [max_i, freq_i]
-        Sistema->>Dataset: Guardar fila (label=1)
+        Preproc->>Picos: extract_max_with_freq()
+        Sistema->>Dataset: Guardar características (label=1)
+    end
+    Sistema->>Modelo: fit(X_train, y_train)
     end
 
-    Sistema->>Modelo: fit(X_train, y_train)
-    Usuario->>Modelo: predict(X_test)
-    Modelo-->>Usuario: Predicciones (0/1)
-    Modelo-->>Usuario: Probabilidades (predict_proba)
-
-    Usuario->>Visualizacion: Graficar resultados
+    rect rgb(220, 255, 220)
+    note over Sistema: Predicción en test/barrido
+    Sistema->>Barrido: seleccionar_archivos_por_rangos()
+    loop Archivos barrido nuevo
+        Sistema->>Preproc: read_s1p_custom()
+        Preproc->>Picos: extract_max_with_freq()
+        Sistema->>Modelo: predict(características)
+        Sistema->>Modelo: predict_proba(características)
+    end
+    Sistema->>Visualizacion: Graficar resultados suavizados (uniform_filter1d)
+    end
