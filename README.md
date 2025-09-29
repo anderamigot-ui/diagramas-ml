@@ -40,6 +40,3 @@ sequenceDiagram
     Sistema->>Visualizacion: Graficar máximos detectados en el barrido (ΔS11)
     Sistema->>Visualizacion: Graficar frecuencias de los picos en el barrido
     end
-
-    Sistema->>Visualizacion: Graficar resultados suavizados (uniform_filter1d)
-    end
